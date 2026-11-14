@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diwali Party 🎆</title>
+<style>
+  :root{
+    --bg:#160b24; --card:#241136; --card2:#301747; --gold:#ffd166;
+    --orange:#ff8c42; --pink:#ff5c8a; --cream:#fff4dc; --muted:#cdbbd5;
+    --green:#70d6a1;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; color:var(--cream);
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(255,209,102,.14), transparent 28%),
+      radial-gradient(circle at 80% 20%, rgba(255,92,138,.12), transparent 30%),
+      linear-gradient(135deg,#10071b,#1b0c2b 50%,#10071b);
+  }
+  header{padding:34px 20px 18px;text-align:center}
+  .diyas{font-size:30px;letter-spacing:12px}
+  h1{font-size:clamp(38px,8vw,72px);margin:6px 0;color:var(--gold);text-shadow:0 0 25px rgba(255,209,102,.35)}
+  header p{margin:0;color:var(--muted);font-size:17px}
+  main{max-width:1100px;margin:auto;padding:18px 20px 50px}
+  .hero{
+    display:flex;gap:16px;align-items:center;justify-content:space-between;
+    background:linear-gradient(135deg,rgba(255,209,102,.13),rgba(255,92,138,.08));
+    border:1px solid rgba(255,209,102,.25);border-radius:24px;padding:20px;
+    margin-bottom:24px;
+  }
+  .hero strong{color:var(--gold)}
+  button{
+    border:0;border-radius:14px;padding:12px 17px;font-weight:800;cursor:pointer;
+    color:#1b0c2b;background:var(--gold);transition:.15s transform,.15s opacity;
+  }
+  button:hover{transform:translateY(-2px)}
+  button.secondary{background:#43235d;color:var(--cream);border:1px solid #704b87}
+  button.danger{background:#ff6b6b}
+  .games{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .game{
+    background:rgba(36,17,54,.92);border:1px solid #48285c;border-radius:22px;padding:22px;
+    min-height:205px;display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .icon{font-size:36px}.game h2{margin:8px 0 5px;font-size:22px}.game p{color:var(--muted);margin:0 0 18px;line-height:1.45}
+  .modal{
+    position:fixed;inset:0;background:rgba(4,2,8,.78);display:none;align-items:center;justify-content:center;
+    padding:18px;z-index:10
+  }
+  .modal.open{display:flex}
+  .panel{
+    width:min(900px,100%);max-height:90vh;overflow:auto;background:#21102f;border:1px solid #633e77;
+    border-radius:26px;padding:26px;box-shadow:0 20px 80px rgba(0,0,0,.5)
+  }
+  .top{display:flex;justify-content:space-between;gap:15px;align-items:center}
+  .top h2{margin:0;color:var(--gold);font-size:30px}
+  .close{background:transparent;color:var(--cream);font-size:24px;padding:4px 10px}
+  .center{text-align:center}
+  .big{font-size:76px;font-weight:900;color:var(--gold);margin:20px 0}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  input,select{
+    background:#160b24;color:var(--cream);border:1px solid #66467a;border-radius:12px;padding:12px 13px;
+    font-size:16px;outline:none;
+  }
+  .score{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
+  .scorecard{background:#32194a;border-radius:16px;padding:12px 16px;min-width:130px}
+  .scorecard b{display:block;color:var(--gold);font-size:22px}
+  .numbers{display:grid;grid-template-columns:repeat(10,1fr);gap:7px;margin-top:18px}
+  .num{aspect-ratio:1;border-radius:10px;background:#32194a;color:var(--cream);display:grid;place-items:center;font-weight:800}
+  .num.called{background:var(--gold);color:#1b0c2b}
+  .num.last{box-shadow:0 0 0 3px var(--orange)}
+  .prompt{
+    font-size:28px;text-align:center;padding:30px 12px;background:#32194a;border-radius:18px;margin:18px 0
+  }
+  .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+  .choice{padding:18px;background:#32194a;border:1px solid #68437a;border-radius:15px;cursor:pointer;text-align:center}
+  .choice:hover{border-color:var(--gold)}
+  .result{margin-top:16px;padding:14px;border-radius:14px;background:rgba(112,214,161,.12);border:1px solid rgba(112,214,161,.3)}
+  footer{text-align:center;color:#8e7898;padding:10px 20px 35px}
+  @media(max-width:600px){.hero{flex-direction:column;align-items:stretch}.numbers{grid-template-columns:repeat(10,1fr);gap:4px}.num{font-size:12px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="diyas">🪔 ✨ 🪔 ✨ 🪔</div>
+  <h1>Diwali Party</h1>
+  <p>Games, laughs & a little friendly chaos.</p>
+</header>
+
+<main>
+  <section class="hero">
+    <div><strong>Tonight's game room</strong><br>Pick a game and pass the phone around!</div>
+    <button onclick="randomGame()">🎲 Random Game</button>
+  </section>
+
+  <section class="games">
+    <article class="game">
+      <div><div class="icon">🎟️</div><h2>Tambola</h2><p>Call random numbers from 1–90 and track them on a shared screen.</p></div>
+      <button onclick="openGame('tambola')">Play Tambola</button>
+    </article>
+    <article class="game">
+      <div><div class="icon">🪔</div><h2>Pass the Diya</h2><p>Stop the music, reveal a ridiculous challenge, and keep the party moving.</p></div>
+      <button onclick="openGame('diya')">Start Challenge</button>
+    </article>
+    <article class="game">
+      <div><div class="icon">🍬</div><h2>Mithai Guess</h2><p>Everyone guesses the number of sweets in the jar. Closest guess wins.</p></div>
+      <button onclick="openGame('mithai')">Start Guessing</button>
+    </article>
+    <article class="game">
+      <div><div class="icon">🎬</div><h2>Bollywood Charades</h2><p>Act it out without speaking. Your team has 45 seconds.</p></div>
+      <button onclick="openGame('charades')">Get a Movie</button>
+    </article>
+    <article class="game">
+      <div><div class="icon">🏏</div><h2>Diya Cricket</h2><p>Roll three virtual dice and build the biggest score.</p></div>
+      <button onclick="openGame('cricket')">Play Cricket</button>
+    </article>
+    <article class="game">
+      <div><div class="icon">🎨</div><h2>Rangoli Battle</h2><p>Draw a quick rangoli on paper or the floor, then let the room vote.</p></div>
+      <button onclick="openGame('rangoli')">Get Prompt</button>
+    </article>
+  </section>
+</main>
+
+<footer>Made for a Diwali party • 🪔 शुभ दीपावली 🪔</footer>
+
+<div class="modal" id="modal">
+  <div class="panel">
+    <div class="top"><h2 id="title"></h2><button class="close" onclick="closeGame()">×</button></div>
+    <div id="content"></div>
+  </div>
+</div>
+
+<script>
+const challenges=[
+ "Do your best Bollywood hero entrance.",
+ "Speak in a dramatic movie-trailer voice for 20 seconds.",
+ "Name 5 Indian sweets in 10 seconds.",
+ "Do a 5-second dance move chosen by the group.",
+ "Give someone at the party a genuine compliment.",
+ "Try saying 'Shubh Deepavali' in 3 different emotions.",
+ "Act like you're lighting 100 diyas in slow motion.",
+ "Tell the funniest family-friendly joke you know.",
+ "Do your best celebrity impression.",
+ "Make up a 10-second Diwali commercial."
+];
+const movies=[
+ "3 Idiots","Sholay","Dangal","PK","Lagaan","Zindagi Na Milegi Dobara",
+ "Queen","Taare Zameen Par","Chak De! India","Krrish","Pathaan","Jawan",
+ "Om Shanti Om","Bajrangi Bhaijaan","Andhadhun","Kabhi Khushi Kabhie Gham"
+];
+const rangoli=[
+ "Design a rangoli using only 3 shapes.",
+ "Make a rangoli inspired by a diya.",
+ "Create a symmetrical rangoli in 3 minutes.",
+ "Make a rangoli using a flower pattern.",
+ "Design a rangoli that represents your family."
+];
+
+let called=[], last=null, diceTotal=0;
+
+function openGame(game){
+ document.getElementById('modal').classList.add('open');
+ const title=document.getElementById('title'), content=document.getElementById('content');
+ if(game==='tambola') renderTambola(title,content);
+ if(game==='diya') renderDiya(title,content);
+ if(game==='mithai') renderMithai(title,content);
+ if(game==='charades') renderCharades(title,content);
+ if(game==='cricket') renderCricket(title,content);
+ if(game==='rangoli') renderRangoli(title,content);
+}
+function closeGame(){document.getElementById('modal').classList.remove('open')}
+function randomGame(){
+ const games=['tambola','diya','mithai','charades','cricket','rangoli'];
+ openGame(games[Math.floor(Math.random()*games.length)]);
+}
+function renderTambola(t,c){
+ t.textContent='🎟️ Tambola';
+ c.innerHTML=`<div class="center"><div class="big" id="lastNum">—</div>
+ <button onclick="callNumber()">📣 Call Number</button>
+ <button class="secondary" onclick="resetTambola()">Reset</button></div>
+ <div class="numbers" id="numbers">${Array.from({length:90},(_,i)=>`<div class="num" id="n${i+1}">${i+1}</div>`).join('')}</div>`;
+ updateNumbers();
+}
+function callNumber(){
+ if(called.length===90)return;
+ let n;
+ do{n=Math.floor(Math.random()*90)+1}while(called.includes(n));
+ called.push(n);last=n;
+ document.getElementById('lastNum').textContent=n;
+ updateNumbers();
+}
+function updateNumbers(){
+ document.querySelectorAll('.num').forEach(x=>x.classList.remove('called','last'));
+ called.forEach(n=>document.getElementById('n'+n)?.classList.add('called'));
+ if(last)document.getElementById('n'+last)?.classList.add('last');
+}
+function resetTambola(){called=[];last=null;renderTambola(document.getElementById('title'),document.getElementById('content'))}
+
+function renderDiya(t,c){
+ t.textContent='🪔 Pass the Diya';
+ c.innerHTML=`<p>Pass an imaginary/flameless diya while music plays. When it stops, press the button!</p>
+ <div class="center"><div class="prompt" id="challenge">Ready?</div>
+ <button onclick="newChallenge()">🪔 Music Stopped!</button></div>`;
+}
+function newChallenge(){document.getElementById('challenge').textContent=challenges[Math.floor(Math.random()*challenges.length)]}
+
+function renderMithai(t,c){
+ t.textContent='🍬 The Great Mithai Guess';
+ c.innerHTML=`<div class="center"><p>Choose a secret number of sweets in the jar. Players enter their guesses below.</p>
+ <input id="secret" type="number" min="1" placeholder="Host: secret answer">
+ <button onclick="revealMithai()">Reveal Winner</button></div>
+ <div id="guesses"></div>`;
+}
+function revealMithai(){
+ const secret=Number(document.getElementById('secret').value);
+ if(!secret)return;
+ const names=[];
+ for(let i=1;i<=4;i++){names.push(`<div class="row" style="margin:8px 0"><input id="name${i}" placeholder="Player ${i}"><input id="guess${i}" type="number" placeholder="Guess"></div>`)}
+ document.getElementById('guesses').innerHTML=names.join('')+`<button onclick="scoreMithai(${secret})">🏆 Find Winner</button><div id="mithaiResult"></div>`;
+}
+function scoreMithai(secret){
+ let best=null, bestDiff=Infinity;
+ for(let i=1;i<=4;i++){
+   const name=document.getElementById('name'+i).value||'Player '+i;
+   const guess=Number(document.getElementById('guess'+i).value);
+   if(!guess)continue;
+   const diff=Math.abs(secret-guess);
+   if(diff<bestDiff){bestDiff=diff;best={name,guess}}
+ }
+ document.getElementById('mithaiResult').innerHTML=best?
+ `<div class="result">🏆 <b>${escapeHtml(best.name)}</b> wins with ${best.guess}! The answer was ${secret}.</div>`:
+ `<div class="result">Enter at least one guess.</div>`;
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+
+function renderCharades(t,c){
+ t.textContent='🎬 Bollywood Charades';
+ c.innerHTML=`<div class="center"><div class="prompt" id="movie">Press for a movie</div>
+ <button onclick="newMovie()">🎬 Reveal Movie</button>
+ <button class="secondary" onclick="startTimer()">⏱️ 45s Timer</button><div id="timer"></div></div>`;
+}
+function newMovie(){document.getElementById('movie').textContent=movies[Math.floor(Math.random()*movies.length)]}
+function startTimer(){
+ let sec=45; document.getElementById('timer').textContent='45';
+ clearInterval(window.timer);
+ window.timer=setInterval(()=>{sec--;document.getElementById('timer').textContent=sec;if(sec<=0){clearInterval(window.timer);document.getElementById('timer').textContent='⏰ TIME!'}},1000);
+}
+
+function renderCricket(t,c){
+ diceTotal=0;
+ t.textContent='🏏 Diya Cricket';
+ c.innerHTML=`<div class="center"><p>Roll three times. Your total is your score!</p>
+ <div class="big" id="cricketScore">0</div>
+ <button onclick="rollDice()">🎲 Roll</button>
+ <button class="secondary" onclick="diceTotal=0;document.getElementById('cricketScore').textContent=0">Reset</button>
+ <p id="rolls"></p></div>`;
+}
+function rollDice(){
+ const d=Math.floor(Math.random()*6)+1; diceTotal+=d;
+ document.getElementById('cricketScore').textContent=diceTotal;
+ document.getElementById('rolls').textContent='Roll: '+d+' • '+(diceTotal>=18?'🔥 SIX ENERGY!':'');
+}
+
+function renderRangoli(t,c){
+ t.textContent='🎨 Rangoli Battle';
+ c.innerHTML=`<div class="center"><div class="prompt" id="rangoliPrompt">${rangoli[Math.floor(Math.random()*rangoli.length)]}</div>
+ <button onclick="document.getElementById('rangoliPrompt').textContent=rerollRangoli()">🎨 New Prompt</button></div>`;
+}
+function rerollRangoli(){return rangoli[Math.floor(Math.random()*rangoli.length)]}
+
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeGame()});
+</script>
+</body>
+</html>
