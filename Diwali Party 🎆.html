@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Diwali Party 🎆</title>
+<style>
+  :root{
+    --bg:#160b24; --card:#241136; --card2:#301747; --gold:#ffd166;
+    --orange:#ff8c42; --pink:#ff5c8a; --cream:#fff4dc; --muted:#cdbbd5; --green:#70d6a1;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; color:var(--cream); background-color:#10071b;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(255,209,102,.14), transparent 28%),
+      radial-gradient(circle at 80% 20%, rgba(255,92,138,.12), transparent 30%),
+      linear-gradient(135deg,#10071b,#1b0c2b 50%,#10071b);
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  header{padding:34px 20px 18px;text-align:center}
+  .diyas{font-size:30px;letter-spacing:12px}
+  h1{font-size:clamp(38px,8vw,72px);margin:6px 0;color:var(--gold);text-shadow:0 0 25px rgba(255,209,102,.35)}
+  header p{margin:0;color:var(--muted);font-size:17px}
+  main{max-width:1100px;margin:auto;padding:18px 20px 50px}
+  .hero{
+    display:flex;gap:16px;align-items:center;justify-content:space-between;
+    background:linear-gradient(135deg,rgba(255,209,102,.13),rgba(255,92,138,.08));
+    border:1px solid rgba(255,209,102,.25);border-radius:24px;padding:20px;margin-bottom:24px;
+  }
+  .hero strong{color:var(--gold)}
+  button{
+    border:0;border-radius:14px;padding:12px 17px;font-weight:800;cursor:pointer;
+    color:#1b0c2b;background:var(--gold);transition:.15s transform,.15s opacity;
+  }
+  button:hover{transform:translateY(-2px)}
+  button.secondary{background:#43235d;color:var(--cream);border:1px solid #704b87}
+  .games{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .game{
+    background:rgba(36,17,54,.92);border:1px solid #48285c;border-radius:22px;padding:22px;
+    min-height:205px;display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .icon{font-size:36px}.game h2{margin:8px 0 5px;font-size:22px}.game p{color:var(--muted);margin:0 0 18px;line-height:1.45}
+  .modal{
+    position:fixed;inset:0;background:rgba(4,2,8,.78);display:none;align-items:center;justify-content:center;
+    padding:18px;z-index:10
+  }
+  .modal.open{display:flex}
+  .panel{
+    width:min(900px,100%);max-height:90vh;overflow:auto;background:#21102f;border:1px solid #633e77;
+    border-radius:26px;padding:26px;box-shadow:0 20px 80px rgba(0,0,0,.5)
+  }
+  .top{display:flex;justify-content:space-between;gap:15px;align-items:center}
+  .top h2{margin:0;color:var(--gold);font-size:30px}
+  .close{background:transparent;color:var(--cream);font-size:24px;padding:4px 10px}
+  .center{text-align:center}
+  .big{font-size:76px;font-weight:900;color:var(--gold);margin:20px 0}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  input,select{
+    background:#160b24;color:var(--cream);border:1px solid #66467a;border-radius:12px;padding:12px 13px;
+    font-size:16px;outline:none;
+  }
+  .numbers{display:grid;grid-template-columns:repeat(10,1fr);gap:7px;margin-top:18px}
+  .num{aspect-ratio:1;border-radius:10px;background:#32194a;color:var(--cream);display:grid;place-items:center;font-weight:800}
+  .num.called{background:var(--gold);color:#1b0c2b}
+  .num.last{box-shadow:0 0 0 3px var(--orange)}
+  .prompt{font-size:28px;text-align:center;padding:30px 12px;background:#32194a;border-radius:18px;margin:18px 0}
+  .result{margin-top:16px;padding:14px;border-radius:14px;background:rgba(112,214,161,.12);border:1px solid rgba(112,214,161,.3)}
+  .mmcard{font-size:40px;font-weight:900;color:var(--gold);padding:44px 12px;border-radius:20px;margin:18px 0;
+    background:linear-gradient(135deg,#43235d,#32194a);border:2px dashed var(--gold);text-align:center}
+  .mmcard.hidden{color:var(--muted);font-size:26px;border-color:#704b87}
+  .mmgroup{text-align:left;margin:8px 0}
+  .howto{margin:14px 0 6px;background:#2b1540;border:1px solid #5a3a70;border-radius:16px;padding:4px 18px 10px}
+  .howto summary{cursor:pointer;font-weight:800;color:var(--gold);padding:10px 0;font-size:18px}
+  .howto h3{margin:16px 0 6px;font-size:17px;color:var(--orange)}
+  .howto ol{margin:0 0 8px;padding-left:22px;line-height:1.5}
+  .howto li{margin:6px 0}
+  .howto p{margin:6px 0;line-height:1.5}
+  .howto .meta{color:var(--muted)}
+  footer{text-align:center;color:#8e7898;padding:10px 20px 35px}
+  @media(max-width:600px){.hero{flex-direction:column;align-items:stretch}.numbers{gap:4px}.num{font-size:12px}.mmcard{font-size:30px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="diyas">🪔 ✨ 🪔 ✨ 🪔</div>
+  <h1>Diwali Party</h1>
+  <p>Games, laughs &amp; a little friendly chaos.</p>
+</header>
+
+<main>
+  <section class="hero">
+    <div><strong>Tonight's game room</strong><br>Pick a game and pass the phone around!</div>
+    <button onclick="randomGame()">🎲 Random Game</button>
+  </section>
+
+  <section class="games">
+    <article class="game">
+      <div><div class="icon">🎟️</div><h2>Tambola</h2><p>Call random numbers from 1–90 and track them on a shared screen.</p></div>
+      <button onclick="openGame('tambola')">Play Tambola</button>
+    </article>
+    <article class="game">
+      <div><div class="icon">🧩</div><h2>Movie Match</h2><p>Each player gets a secret piece of a movie title. Find the people who complete yours!</p></div>
+      <button onclick="openGame('match')">Play Movie Match</button>
+    </article>
+    <article class="game">
+      <div><div class="icon">🪔</div><h2>Pass the Diya</h2><p>Stop the music, reveal a ridiculous challenge, and keep the party moving.</p></div>
+      <button onclick="openGame('diya')">Start Challenge</button>
+    </article>
+    <article class="game">
+      <div><div class="icon">🍬</div><h2>Mithai Guess</h2><p>Everyone guesses the number of sweets in the jar. Closest guess wins.</p></div>
+      <button onclick="openGame('mithai')">Start Guessing</button>
+    </article>
+    <article class="game">
+      <div><div class="icon">🎬</div><h2>Bollywood Charades</h2><p>Act it out without speaking. Your team has 45 seconds.</p></div>
+      <button onclick="openGame('charades')">Get a Movie</button>
+    </article>
+    <article class="game">
+      <div><div class="icon">🏏</div><h2>Diya Cricket</h2><p>Roll three virtual dice and build the biggest score.</p></div>
+      <button onclick="openGame('cricket')">Play Cricket</button>
+    </article>
+    <article class="game">
+      <div><div class="icon">🎨</div><h2>Rangoli Battle</h2><p>Draw a quick rangoli on paper or the floor, then let the room vote.</p></div>
+      <button onclick="openGame('rangoli')">Get Prompt</button>
+    </article>
+  </section>
+</main>
+
+<footer>Made for a Diwali party • 🪔 शुभ दीपावली 🪔</footer>
+
+<div class="modal" id="modal">
+  <div class="panel">
+    <div class="top"><h2 id="title"></h2><button class="close" onclick="closeGame()">×</button></div>
+    <div id="howto"></div>
+    <div id="content"></div>
+  </div>
+</div>
+
+<script>
+const challenges=[
+ "Do your best Bollywood hero entrance.",
+ "Speak in a dramatic movie-trailer voice for 20 seconds.",
+ "Name 5 Indian sweets in 10 seconds.",
+ "Do a 5-second dance move chosen by the group.",
+ "Give someone at the party a genuine compliment.",
+ "Try saying 'Shubh Deepavali' in 3 different emotions.",
+ "Act like you're lighting 100 diyas in slow motion.",
+ "Tell the funniest family-friendly joke you know.",
+ "Do your best celebrity impression.",
+ "Make up a 10-second Diwali commercial."
+];
+const movies=[
+ "3 Idiots","Sholay","Dangal","PK","Lagaan","Zindagi Na Milegi Dobara",
+ "Queen","Taare Zameen Par","Chak De! India","Krrish","Pathaan","Jawan",
+ "Om Shanti Om","Bajrangi Bhaijaan","Andhadhun","Kabhi Khushi Kabhie Gham"
+];
+const rangoli=[
+ "Design a rangoli using only 3 shapes.",
+ "Make a rangoli inspired by a diya.",
+ "Create a symmetrical rangoli in 3 minutes.",
+ "Make a rangoli using a flower pattern.",
+ "Design a rangoli that represents your family."
+];
+// Movie Match: each title is split into 3 parts with "|"
+const matchSets={
+ indian:[
+  "Zindagi|Na Milegi|Dobara","Kabhi Khushi|Kabhie|Gham","Chak De|India|!","Om|Shanti|Om",
+  "Taare|Zameen|Par","Dilwale|Dulhania Le|Jayenge","Kuch Kuch|Hota|Hai","Hum Aapke|Hain|Koun",
+  "Jab|We|Met","Munna|Bhai|MBBS","Dil|Chahta|Hai","Kal Ho|Naa|Ho","Bhaag|Milkha|Bhaag",
+  "Lage Raho|Munna|Bhai","Jab Tak|Hai|Jaan","Ek Tha|Tiger|Returns"
+ ],
+ cartoon:[
+  "The|Lion|King","Kung Fu|Panda|2","Big|Hero|6","Lilo|and|Stitch","Beauty|and the|Beast",
+  "Alice in|Wonder|land","Finding|Nemo|Again","The Jungle|Book|Adventure","Wreck-It|Ralph|Returns",
+  "Puss|in|Boots","Toy|Story|Gang","Monsters|Inc|Fun","How to|Train Your|Dragon","Ice|Age|Fun"
+ ]
+};
+
+const HOWTO={
+ tambola:{who:"1 host + any number of players",need:"one Tambola ticket per player (3 rows × 9 columns, 15 numbers each), pens, small prizes",goal:"Be first to cross off the numbers for each prize, finishing with the Full House.",
+  host:[
+   "Before the party, get a ticket for every player (printed, or from any free online Tambola ticket generator). This page only calls numbers; it doesn’t hand out tickets.",
+   "Announce the prizes before you start. The classic list: Early Five (first five numbers crossed on a ticket), Top Line, Middle Line, Bottom Line, Four Corners and Full House (all 15). A Second Full House is a popular extra.",
+   "Tap 📣 Call Number and read the number out loud, then say it digit by digit (“two and two, twenty-two”) so nobody mishears. Pause a few seconds between calls.",
+   "The gold squares on the board are numbers already called, and the orange outline is the latest one. Use it to settle any “was 47 called?” arguments.",
+   "When someone shouts a claim, stop calling. Read their numbers aloud and check each one against the board. If it’s valid, award the prize and tick it off your list. If not, apply your house rule (commonly that player can’t claim that prize again) and carry on.",
+   "Keep going until the Full House is claimed or all 90 numbers are out. Tap Reset for a fresh game."],
+  players:[
+   "Take a ticket (agree on a limit of 1–2 each).",
+   "Listen to each number and cross it out straight away if it’s on your ticket.",
+   "Track your progress: any five crossed = Early Five, a full row = a Line, the four corner numbers = Four Corners, all 15 = Full House.",
+   "The moment you complete a pattern, shout it (“Early Five!”, “Top Line!”, “Full House!”). Claim before the next number is called; this is a common rule, so confirm it with the host.",
+   "Keep your ticket handy so the host can verify it. A wrong claim is no big deal, so laugh and keep playing."],
+  tip:"If two people finish on the same number, split the prize or call one extra number as a tie-break. Decide this before starting."},
+ match:{who:"3–30 players (6–15 is best), 1 host",need:"one phone or tablet to pass around, plus a timer",goal:"Find the other people holding the pieces that complete your movie title, before the other groups do.",
+  host:[
+   "Open Movie Match, pick 🇮🇳 Adult / Indian Movies or 🎨 Teen / Cartoon Movies, enter the exact number of players, and tap Deal Cards.",
+   "Explain the game before dealing: every movie title is split into three pieces, and each player gets one piece. If the headcount isn’t a multiple of 3, some groups will have a 4th player who shares a piece.",
+   "Pass the device around. Each player taps Reveal My Card, memorizes it, then taps Hide Card & Pass before handing it on. Make sure nobody peeks over a shoulder.",
+   "When the screen says all cards are dealt, say “Go!” and start a 3–5 minute timer.",
+   "When groups think they’re complete, or time is up, ask each group to announce its movie. Then tap Reveal Answer to show every movie and its pieces. The first correct group wins.",
+   "Tap New Round to play again with different movies (try the other category)."],
+  players:[
+   "Take the device when it’s your turn, tap Reveal My Card, read your piece silently and memorize it.",
+   "Tap Hide Card & Pass and hand the device on. Never show your screen to anyone.",
+   "Once everyone has a card, mingle. Say your piece out loud or ask questions to find the two other people whose pieces fit with yours to make a real movie title.",
+   "Beware of look-alikes: pieces from different movies can sound similar, so confirm the full title with your group.",
+   "Once your group has all the pieces, stand together and tell the host your movie."],
+  tip:"For a harder round, ban speaking your piece. Players must act it out or hum instead."},
+ diya:{who:"5+ players in a circle, 1 host",need:"music from a separate speaker or phone (this page plays no sound), a flameless diya or any safe object to pass",goal:"Keep the diya moving, and take on the challenge when the music stops on you.",
+  host:[
+   "Seat or stand everyone in a circle. Pick a safe stand-in for the diya (an LED tea light, a decorative plate or a small toy). Don’t pass a lit flame.",
+   "Start the music on another device. Tell players which direction to pass in, and that the diya moves only while music plays.",
+   "Stop the music at random moments, sometimes after 3 seconds and sometimes after 20, so nobody can guess the timing.",
+   "When the music stops, tap 🪔 Music Stopped! and read the challenge aloud to whoever is holding the diya.",
+   "Watch for challenge completion and cheer them on. If someone won’t do a challenge, tap for a new one and let them try that instead.",
+   "Restart the music and repeat. Optionally award a sweet or point for every completed challenge."],
+  players:[
+   "Pass the diya to the next person in the agreed direction as soon as the music starts.",
+   "Freeze the moment the music stops. Whoever is holding the diya takes the challenge.",
+   "Perform the challenge on the screen with full drama; the group decides if it was convincing enough.",
+   "Pass the diya on and keep the circle going. Handle it carefully and never run with it."],
+  tip:"Variety keeps it fun: unpredictable stops and a mix of silly and kind challenges work best."},
+ mithai:{who:"Any number of players, 1 host",need:"a clear jar full of sweets (counted by the host), paper slips and pens",goal:"Guess the number of sweets in the jar. The closest guess wins the jar.",
+  host:[
+   "Before the party, fill the jar and count every sweet as it goes in. Write the exact number down and keep it secret.",
+   "Put the jar on display. Give each guest a slip to write their name and one guess. Everyone gets one guess only; collect the slips as they come in so nothing is disputed later.",
+   "Announce the tie rule up front, e.g. the earliest guess wins, or tied players make a new guess in a tie-break round.",
+   "When guessing closes, open Mithai Guess, type your secret number into the host box and tap Reveal Winner.",
+   "Enter the names and guesses from the slips and tap 🏆 Find Winner. This page has room for 4 players per round, so for a bigger group enter the closest guesses from the slips (or run it as several rounds).",
+   "Announce the winner and hand over the jar."],
+  players:[
+   "Look at the jar from all sides. Don’t touch it or open it.",
+   "Estimate: count how many sweets cover one layer, count roughly how many layers there are, then multiply.",
+   "Write your name and one number on a slip and hand it in. No changes after submitting.",
+   "Closest to the real number wins, whether over or under."],
+  tip:"Count as you fill the jar. That’s the one thing that has ruined many a guessing game."},
+ charades:{who:"6+ players in 2 teams, 1 host or timekeeper",need:"one phone or tablet, a way to keep score (paper works)",goal:"The actor mimes the movie title without speaking, and their team guesses it before the 45 seconds run out. Most correct guesses wins.",
+  host:[
+   "Split the group into two teams and agree on turns: teams alternate, and everyone should act at least once or twice.",
+   "Explain the rules: no talking, mouthing, sound effects or pointing at real objects in the room. Gestures and body language only.",
+   "Hold the device so only the actor sees the screen. Tap 🎬 Reveal Movie, let the actor read it, then tap ⏱️ 45s Timer straight away.",
+   "Judge guesses. When the team says the exact title, stop the timer and give the team a point. At ⏰ TIME! the turn ends with no point.",
+   "Don’t tap Reveal Movie again for the same turn, because it picks a new movie. Allow one skip per team if you want.",
+   "Keep score yourself (the page doesn’t), then swap teams. Highest score after an agreed number of rounds wins."],
+  players:[
+   "Actor: read the title privately, don’t react, and tell your team nothing. Then act it out.",
+   "Use standard signals to speed things up: crank an imaginary camera to say “movie”, hold up fingers for the number of words, and tug your ear for “sounds like”.",
+   "You can act the whole title, one word at a time, or something that sounds similar to a word.",
+   "Guessers: shout out guesses freely and fast. The actor can nod or point at you when you’re warm, but can’t speak.",
+   "When the movie is guessed, high-five and rotate to the next actor."],
+  tip:"Mix the teams so every team has a Bollywood expert. For an easier game, use 60–90 seconds instead of 45."},
+ cricket:{who:"2+ players, 1 scorekeeper",need:"one phone or tablet, paper to keep score",goal:"Score the highest total from three rolls.",
+  host:[
+   "Tell the group the rules: every player gets exactly three rolls, and the best total across everyone wins. The maximum is 18.",
+   "Open Diya Cricket and make sure the score shows 0 (tap Reset between players).",
+   "Count each player’s rolls aloud. The page doesn’t stop at three, so you have to. Call “Out!” after the third roll.",
+   "Write each player’s final score on paper, tap Reset, and move on to the next player.",
+   "When everyone has played, announce the highest score. If tied, tied players roll once each as sudden death."],
+  players:[
+   "Tap 🎲 Roll once for each of your three turns. Each roll adds to your score.",
+   "No re-rolls and no taking back a roll. Call out your total after the third roll.",
+   "A total of 18 (all sixes) triggers the “SIX ENERGY” message. Celebrate it.",
+   "Cheer for the other players and keep the energy up between turns."],
+  tip:"For team play, add the three-roll totals of each team member together."},
+ rangoli:{who:"Individuals or teams of 2–3, 1 host plus voters or judges",need:"rangoli colors, flower petals, rice or chalk, or paper and markers for indoors, plus a timer",goal:"Create the best rangoli in the time given, as chosen by the room.",
+  host:[
+   "Choose a shared space and size for each rangoli (a 2×2 ft square is plenty) and lay out the same materials for every entry, such as colored powder, petals, rice, chalk or paper and markers.",
+   "Open Rangoli Battle and tap 🎨 New Prompt until you have one the group likes, then read it out. Everyone uses the same prompt.",
+   "Set a time limit (10–15 minutes works at a party) and start the timer. Real rangoli contests give hours, but a party needs speed.",
+   "Call time. Anyone going over time loses points, or just gets teased.",
+   "Judge or vote. Typical criteria from real contests are creativity, color combination, neatness and symmetry, relevance to the prompt, and overall look. Give each guest one vote (not for their own work) or use 2–3 judges.",
+   "Announce the winner and take photos. Keep lit diyas away from the artwork and use LED lights instead."],
+  players:[
+   "Read the prompt, plan quickly, and sketch a rough shape first.",
+   "Use only the materials and space provided. No pre-made stickers or stencils, and no phones for help.",
+   "Work from the center outward and keep your lines tidy. Symmetry and color contrast score well.",
+   "Stop immediately when time is called, then step back for the vote."],
+  tip:"Cover the floor with newspaper or a sheet first, and let kids enter on a separate 'junior' prompt."}
+};
+function howtoHtml(g){
+ const h=HOWTO[g]; if(!h)return '';
+ const li=a=>a.map(x=>'<li>'+x+'</li>').join('');
+ return '<details class="howto" open><summary>📖 How to play</summary>'+
+  '<p class="meta"><b>Players:</b> '+h.who+'<br><b>You’ll need:</b> '+h.need+'</p>'+
+  '<p><b>🎯 Goal:</b> '+h.goal+'</p>'+
+  '<h3>🎤 What the host does</h3><ol>'+li(h.host)+'</ol>'+
+  '<h3>🙋 What the players do</h3><ol>'+li(h.players)+'</ol>'+
+  (h.tip?'<p class="meta"><b>💡 Tip:</b> '+h.tip+'</p>':'')+'</details>';
+}
+
+let called=[], last=null, diceTotal=0, mm=null;
+
+function openGame(game){
+ document.getElementById('modal').classList.add('open');
+ const title=document.getElementById('title'), content=document.getElementById('content');
+ if(game==='tambola') renderTambola(title,content);
+ if(game==='match') renderMatch(title,content);
+ if(game==='diya') renderDiya(title,content);
+ if(game==='mithai') renderMithai(title,content);
+ if(game==='charades') renderCharades(title,content);
+ if(game==='cricket') renderCricket(title,content);
+ if(game==='rangoli') renderRangoli(title,content);
+ document.getElementById('howto').innerHTML=howtoHtml(game);
+}
+function closeGame(){document.getElementById('modal').classList.remove('open')}
+function randomGame(){
+ const games=['tambola','match','diya','mithai','charades','cricket','rangoli'];
+ openGame(games[Math.floor(Math.random()*games.length)]);
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function renderTambola(t,c){
+ t.textContent='🎟️ Tambola';
+ c.innerHTML=`<div class="center"><div class="big" id="lastNum">—</div>
+ <button onclick="callNumber()">📣 Call Number</button>
+ <button class="secondary" onclick="resetTambola()">Reset</button></div>
+ <div class="numbers" id="numbers">${Array.from({length:90},(_,i)=>`<div class="num" id="n${i+1}">${i+1}</div>`).join('')}</div>`;
+ updateNumbers();
+}
+function callNumber(){
+ if(called.length===90)return;
+ let n;
+ do{n=Math.floor(Math.random()*90)+1}while(called.includes(n));
+ called.push(n);last=n;
+ document.getElementById('lastNum').textContent=n;
+ updateNumbers();
+}
+function updateNumbers(){
+ document.querySelectorAll('.num').forEach(x=>x.classList.remove('called','last'));
+ called.forEach(n=>document.getElementById('n'+n)?.classList.add('called'));
+ if(last)document.getElementById('n'+last)?.classList.add('last');
+}
+function resetTambola(){called=[];last=null;renderTambola(document.getElementById('title'),document.getElementById('content'))}
+
+/* ---------- Movie Match ---------- */
+function renderMatch(t,c){
+ t.textContent='🧩 Movie Match';
+ mm=null;
+ c.innerHTML=`<p>Each player secretly gets one part of a 3-part movie title. Walk around and find the two people who complete your movie!</p>
+ <div class="row" style="justify-content:center;margin:14px 0">
+  <select id="mmMode"><option value="indian">🇮🇳 Adult / Indian Movies</option><option value="cartoon">🎨 Teen / Cartoon Movies</option></select>
+  <input id="mmN" type="number" min="3" max="30" value="9" style="width:90px" aria-label="Number of players">
+  <button onclick="mmStart()">🧩 Deal Cards</button>
+ </div>
+ <p style="color:var(--muted);text-align:center;margin:0">3–30 players. Best with 6–15. If the count isn't a multiple of 3, some groups get a 4th player who shares a part.</p>
+ <div id="mmArea" class="center"></div>`;
+}
+function mmStart(){
+ let n=parseInt(document.getElementById('mmN').value,10);
+ if(isNaN(n))n=9; n=Math.max(3,Math.min(30,n));
+ document.getElementById('mmN').value=n;
+ const pool=matchSets[document.getElementById('mmMode').value];
+ const groups=Math.floor(n/3);
+ const picked=shuffle(pool).slice(0,groups).map(s=>s.split('|'));
+ let cards=[];
+ picked.forEach((parts,g)=>parts.forEach(p=>cards.push({g,p})));
+ for(let e=0;e<n-groups*3;e++){const g=Math.floor(Math.random()*groups);cards.push({g,p:picked[g][Math.floor(Math.random()*3)]})}
+ mm={cards:shuffle(cards),movies:picked,i:0,n};
+ mmDeal();
+}
+function mmDeal(){
+ const a=document.getElementById('mmArea');
+ if(mm.i>=mm.n){
+  a.innerHTML=`<div class="prompt">All ${mm.n} cards dealt! 🎉<br><small style="font-size:18px;color:var(--muted)">Find the people whose pieces complete your movie.</small></div>
+  <button onclick="mmReveal()">🔍 Reveal Answer</button> <button class="secondary" onclick="renderMatch(document.getElementById('title'),document.getElementById('content'))">New Round</button>`;
+  return;
+ }
+ a.innerHTML=`<p style="margin-top:22px">Player ${mm.i+1} of ${mm.n}: take the device, then tap to reveal.</p>
+ <div class="mmcard hidden">🙈 Card hidden</div>
+ <button onclick="mmShow()">👀 Reveal My Card</button>`;
+}
+function mmShow(){
+ const card=mm.cards[mm.i];
+ document.getElementById('mmArea').innerHTML=`<p style="margin-top:22px">Player ${mm.i+1}: memorize your piece, then hide it.</p>
+ <div class="mmcard">${card.p}</div>
+ <button onclick="mm.i++;mmDeal()">🙈 Hide Card &amp; Pass</button>`;
+}
+function mmReveal(){
+ const rows=mm.movies.map(m=>`<div class="mmgroup">🎬 <b>${m.join(' ').replace(/\s+!/,'!')}</b> <span style="color:var(--muted)">(${m.join(' + ')})</span></div>`).join('');
+ document.getElementById('mmArea').innerHTML=`<div class="result" style="text-align:left"><b>Today's movies:</b>${rows}</div>
+ <p><button class="secondary" onclick="renderMatch(document.getElementById('title'),document.getElementById('content'))">🔁 New Round</button></p>`;
+}
+
+function renderDiya(t,c){
+ t.textContent='🪔 Pass the Diya';
+ c.innerHTML=`<p>Pass an imaginary/flameless diya while music plays. When it stops, press the button!</p>
+ <div class="center"><div class="prompt" id="challenge">Ready?</div>
+ <button onclick="newChallenge()">🪔 Music Stopped!</button></div>`;
+}
+function newChallenge(){document.getElementById('challenge').textContent=challenges[Math.floor(Math.random()*challenges.length)]}
+
+function renderMithai(t,c){
+ t.textContent='🍬 The Great Mithai Guess';
+ c.innerHTML=`<div class="center"><p>Choose a secret number of sweets in the jar. Players enter their guesses below.</p>
+ <input id="secret" type="number" min="1" placeholder="Host: secret answer">
+ <button onclick="revealMithai()">Reveal Winner</button></div>
+ <div id="guesses"></div>`;
+}
+function revealMithai(){
+ const secret=Number(document.getElementById('secret').value);
+ if(!secret)return;
+ const names=[];
+ for(let i=1;i<=4;i++){names.push(`<div class="row" style="margin:8px 0"><input id="name${i}" placeholder="Player ${i}"><input id="guess${i}" type="number" placeholder="Guess"></div>`)}
+ document.getElementById('guesses').innerHTML=names.join('')+`<button onclick="scoreMithai(${secret})">🏆 Find Winner</button><div id="mithaiResult"></div>`;
+}
+function scoreMithai(secret){
+ let best=null, bestDiff=Infinity;
+ for(let i=1;i<=4;i++){
+   const name=document.getElementById('name'+i).value||'Player '+i;
+   const guess=Number(document.getElementById('guess'+i).value);
+   if(!guess)continue;
+   const diff=Math.abs(secret-guess);
+   if(diff<bestDiff){bestDiff=diff;best={name,guess}}
+ }
+ document.getElementById('mithaiResult').innerHTML=best?
+ `<div class="result">🏆 <b>${escapeHtml(best.name)}</b> wins with ${best.guess}! The answer was ${secret}.</div>`:
+ `<div class="result">Enter at least one guess.</div>`;
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+
+function renderCharades(t,c){
+ t.textContent='🎬 Bollywood Charades';
+ c.innerHTML=`<div class="center"><div class="prompt" id="movie">Press for a movie</div>
+ <button onclick="newMovie()">🎬 Reveal Movie</button>
+ <button class="secondary" onclick="startTimer()">⏱️ 45s Timer</button><div id="timer"></div></div>`;
+}
+function newMovie(){document.getElementById('movie').textContent=movies[Math.floor(Math.random()*movies.length)]}
+function startTimer(){
+ let sec=45; document.getElementById('timer').textContent='45';
+ clearInterval(window.timer);
+ window.timer=setInterval(()=>{sec--;document.getElementById('timer').textContent=sec;if(sec<=0){clearInterval(window.timer);document.getElementById('timer').textContent='⏰ TIME!'}},1000);
+}
+
+function renderCricket(t,c){
+ diceTotal=0;
+ t.textContent='🏏 Diya Cricket';
+ c.innerHTML=`<div class="center"><p>Roll three times. Your total is your score!</p>
+ <div class="big" id="cricketScore">0</div>
+ <button onclick="rollDice()">🎲 Roll</button>
+ <button class="secondary" onclick="diceTotal=0;document.getElementById('cricketScore').textContent=0">Reset</button>
+ <p id="rolls"></p></div>`;
+}
+function rollDice(){
+ const d=Math.floor(Math.random()*6)+1; diceTotal+=d;
+ document.getElementById('cricketScore').textContent=diceTotal;
+ document.getElementById('rolls').textContent='Roll: '+d+' • '+(diceTotal>=18?'🔥 SIX ENERGY!':'');
+}
+
+function renderRangoli(t,c){
+ t.textContent='🎨 Rangoli Battle';
+ c.innerHTML=`<div class="center"><div class="prompt" id="rangoliPrompt">${rangoli[Math.floor(Math.random()*rangoli.length)]}</div>
+ <button onclick="document.getElementById('rangoliPrompt').textContent=rerollRangoli()">🎨 New Prompt</button></div>`;
+}
+function rerollRangoli(){return rangoli[Math.floor(Math.random()*rangoli.length)]}
+
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeGame()});
+</script>
+</body>
+</html>
